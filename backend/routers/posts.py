@@ -1,9 +1,10 @@
 from math import ceil
 
 from database import get_db
-from dependencies import get_current_user_id
+from dependencies import get_current_user, get_current_user_id
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from models import Post
+from models import Comment, Post, User
+from schemas.comment import CommentCreate, CommentResponse
 from schemas.post import PaginatedPostResponse, PostRequest, PostResponse
 from sqlalchemy import func
 from sqlalchemy.orm import Session, joinedload
@@ -83,3 +84,51 @@ def create_post(
     db.refresh(new_post, ["author"])
 
     return new_post
+
+
+# For comments
+
+
+@router.get("/{post_id}/comments", response_model=list[CommentResponse])
+def get_comments(post_id: int, db: Session = Depends(get_db)):
+    # Get comments only for this specific post
+    comments = (
+        db.query(Comment)
+        .options(joinedload(Comment.author))
+        .filter(Comment.post_id == post_id)
+        .order_by(Comment.created_at.desc())
+        .all()
+    )
+    return comments
+
+
+@router.post("/{post_id}/comments", response_model=CommentResponse)
+def create_comment(
+    post_id: int,
+    comment: CommentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    # Verify post exists
+    post = db.query(Post).filter(Post.id == post_id).first()
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {post_id} not found"
+        )
+
+    # Create comment
+    new_comment = Comment(
+        content=comment.content,
+        author_id=current_user.id,
+        post_id=post_id
+    )
+
+    db.add(new_comment)
+    db.commit()
+    db.refresh(new_comment)
+
+    # Load author relationship
+    db.refresh(new_comment, ["author"])
+
+    return new_comment
