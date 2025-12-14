@@ -1,10 +1,8 @@
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function PostList() {
-  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
