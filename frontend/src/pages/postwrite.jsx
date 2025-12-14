@@ -2,7 +2,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function BoardWrite() {
+function PostWrite() {
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -10,11 +10,7 @@ function BoardWrite() {
   const { sessionId } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
-    e.preventDefault(); // 기본 form 동작 막기
-    if (sessionId === "" || sessionId === null) {
-      alert("Please login first");
-      return;
-    }
+    e.preventDefault();
 
     try {
       const response = await fetch("http://localhost:8000/api/posts", {
@@ -27,16 +23,23 @@ function BoardWrite() {
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Failed to create post");
+        return;
+      }
+
       console.log("Success:", data);
-      navigate("/board");
-      // redirect to the home page
+      navigate("/posts");
     } catch (error) {
       console.error("Error:", error);
+      alert("Failed to create post. Please try again.");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      <h1>Create Post</h1>
       <p>Title</p>
       <input
         name="title"
@@ -56,4 +59,4 @@ function BoardWrite() {
     </form>
   );
 }
-export default BoardWrite;
+export default PostWrite;

@@ -10,9 +10,9 @@ function Home() {
   const navigate = useNavigate();
   const { login, sessionId } = useAuth();
 
-  // Redirect to board if already logged in
+  // Redirect to posts if already logged in
   if (sessionId) {
-    return <Navigate to="/board" replace />;
+    return <Navigate to="/posts" replace />;
   }
 
   const handleSubmit = async (e) => {
@@ -38,7 +38,7 @@ function Home() {
       console.log("session id:", data.session_id);
 
       login(data.session_id);
-      navigate("/board");
+      navigate("/posts");
     } catch (error) {
       console.error("Error:", error);
       alert("Login failed. Please try again.");

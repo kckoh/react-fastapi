@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function BoardList() {
+function PostList() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
 
@@ -22,16 +22,16 @@ function BoardList() {
 
   return (
     <div>
-      <h1>Board Page</h1>
+      <h1>Posts</h1>
       {posts.map((post) => (
         <>
           <div key={post.id}>
-            {post.title} | {post.content} | {post.author.email} |
-            <Link to={`/board/${post.id}`}>View</Link>
+            {post.title} | {post.author.email} |
+            <Link to={`/posts/${post.id}`}>View</Link>
           </div>
         </>
       ))}
     </div>
   );
 }
-export default BoardList;
+export default PostList;

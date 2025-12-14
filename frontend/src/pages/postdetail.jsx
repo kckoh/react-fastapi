@@ -1,14 +1,14 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function BoardDetail() {
+function PostDetail() {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
   return (
     <div>
-      <h1>Board Detail page</h1>
+      <h1>Post Detail</h1>
     </div>
   );
 }
-export default BoardDetail;
+export default PostDetail;
