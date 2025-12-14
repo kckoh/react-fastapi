@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function BoardList() {
   const navigate = useNavigate();
@@ -23,9 +24,12 @@ function BoardList() {
     <div>
       <h1>Board Page</h1>
       {posts.map((post) => (
-        <div key={post.id}>
-          {post.title} | {post.content} | {post.author.email}
-        </div>
+        <>
+          <div key={post.id}>
+            {post.title} | {post.content} | {post.author.email} |
+            <Link to={`/board/${post.id}`}>View</Link>
+          </div>
+        </>
       ))}
     </div>
   );

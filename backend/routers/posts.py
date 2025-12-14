@@ -1,6 +1,6 @@
 from database import get_db
 from dependencies import get_current_user_id
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from models import Post
 from schemas.post import PostRequest, PostResponse
 from sqlalchemy.orm import Session, joinedload
@@ -13,6 +13,24 @@ def get_posts(db: Session = Depends(get_db)):
     # Use joinedload to fetch author in the same query (avoids N+1 problem)
     posts = db.query(Post).options(joinedload(Post.author)).all()
     return posts
+
+
+@router.get("/{id}", response_model=PostResponse)
+def get_post_detail(id: int, db: Session = Depends(get_db)):
+    post = (
+        db.query(Post)
+        .options(joinedload(Post.author))
+        .filter(Post.id == id)
+        .first()
+    )
+
+    if not post:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post with id {id} not found",
+        )
+
+    return post
 
 
 @router.post("/", response_model=PostResponse, status_code=status.HTTP_201_CREATED)
