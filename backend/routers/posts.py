@@ -1,6 +1,6 @@
 from database import get_db
 from dependencies import get_current_user_id
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from models import Post
 from schemas.post import PostRequest, PostResponse
 from sqlalchemy.orm import Session, joinedload
@@ -19,16 +19,12 @@ def get_posts(db: Session = Depends(get_db)):
 def create_post(
     post: PostRequest,
     db: Session = Depends(get_db),
-    current_user_id: int = Depends(get_current_user_id)
+    current_user_id: int = Depends(get_current_user_id),
 ):
     # Dependency automatically validates session and returns user_id
     # If we reach here, user is authenticated
 
-    new_post = Post(
-        title=post.title,
-        content=post.content,
-        author_id=current_user_id
-    )
+    new_post = Post(title=post.title, content=post.content, author_id=current_user_id)
 
     db.add(new_post)
     db.commit()
