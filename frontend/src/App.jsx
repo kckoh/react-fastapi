@@ -1,9 +1,13 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+} from "react-router-dom";
 import Home from "./pages/home";
 import SignUp from "./pages/signup";
-import PostList from "./pages/postlist";
-import PostDetail from "./pages/postdetail";
-import PostWrite from "./pages/postwrite";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
 
@@ -35,7 +39,7 @@ function NavBar() {
           {/* Logo/Brand */}
           <Link to="/" className="flex items-center">
             <span className="text-white text-2xl font-bold hover:text-gray-200 transition">
-              Jungle Board
+              XFlow
             </span>
           </Link>
 
@@ -67,24 +71,6 @@ function NavBar() {
 
             {sessionId && (
               <>
-                <Link
-                  to="/posts"
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                    isActive("/posts")
-                      ? "bg-white text-blue-600"
-                      : "text-white hover:bg-blue-700"
-                  }`}
-                >
-                  Posts
-                </Link>
-
-                <Link
-                  to="/posts/write"
-                  className="px-4 py-2 rounded-md text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition"
-                >
-                  Write Post
-                </Link>
-
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 rounded-md text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition"
@@ -113,11 +99,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
 
             {/* Protected routes - all require authentication */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/posts" element={<PostList />} />
-              <Route path="/posts/write" element={<PostWrite />} />
-              <Route path="/posts/:id" element={<PostDetail />} />
-            </Route>
+            <Route element={<ProtectedRoute />}></Route>
           </Routes>
         </main>
       </div>
